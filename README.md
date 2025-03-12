@@ -1,54 +1,44 @@
-# React + TypeScript + Vite
+# Painel de Monitoramento COVID-19
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![COVID-19 Dashboard](https://via.placeholder.com/800x400)
 
-Currently, two official plugins are available:
+## 📌 Sobre o Projeto
+Este projeto é um painel interativo para monitoramento de dados da COVID-19. Ele permite consultar informações detalhadas sobre casos, óbitos e recuperações, tanto para estados brasileiros quanto para países.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Tecnologias Utilizadas
+- **React** + **Vite** - Framework e ferramenta de build para aplicações modernas.
+- **TypeScript** - Para um código mais seguro e tipado.
+- **Tailwind CSS** - Para um design responsivo e elegante.
+- **Axios** - Para consumo da API de dados da COVID-19.
+- **React Hook Form** - Para gerenciamento do formulário.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 📂 Estrutura do Projeto
+```
+src/
+├── components/
+│   ├── StateSelector.tsx   # Busca dados de um estado brasileiro
+│   ├── DatePicker.tsx      # Busca dados do Brasil por data
+│   ├── CountrySearch.tsx   # Busca dados de um país
+│   ├── Form.tsx            # Simula o envio de dados
+│   ├── DataTable.tsx       # Componente de tabela reutilizável
+├── services/
+│   ├── api.ts              # Comunicação com a API
+├── App.tsx                 # Componente principal
+├── main.tsx                # Ponto de entrada da aplicação
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🔥 Funcionalidades
+✅ **Consultar casos por estado** (Brasil)  
+✅ **Consultar casos por data** (Brasil)  
+✅ **Consultar casos por país**  
+✅ **Simular envio de dados via formulário**  
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📡 API Utilizada
+Os dados são consumidos da API pública **[COVID-19 Brazil API](https://covid19-brazil-api.now.sh/api/report/v1)**.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### Exemplo de Endpoints:
+- **`/brazil/uf/{UF}`** → Retorna dados do estado brasileiro (ex: SP, RJ, MG).
+- **`/brazil/{YYYYMMDD}`** → Retorna dados do Brasil por data.
+- **`/countries/{country}`** → Retorna dados de um país específico.
+
+
