@@ -1,6 +1,6 @@
 # Painel de Monitoramento COVID-19
 
-![COVID-19 Dashboard](https://via.placeholder.com/800x400)
+
 
 ## 📌 Sobre o Projeto
 Este projeto é um painel interativo para monitoramento de dados da COVID-19. Ele permite consultar informações detalhadas sobre casos, óbitos e recuperações, tanto para estados brasileiros quanto para países.
