@@ -1,28 +1,35 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaGlobeAmericas } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { getCountryStatus, getAllCountriesStatus, CountryData } from '../services/api';
 import DataTable from './DataTable';
-import 'country-flag-icons/3x2/flags.css'; // Importe os estilos das bandeiras
 
 const CountrySearch: React.FC = () => {
   const [country, setCountry] = useState<string>('');
-  const [data, setData] = useState<CountryData[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<CountryData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const [allCountries, setAllCountries] = useState<CountryData[]>([]);
   const [filteredCountries, setFilteredCountries] = useState<CountryData[]>([]);
 
+  // Busca todos os países ao carregar o componente
   useEffect(() => {
     const fetchAllCountries = async () => {
       setIsLoading(true);
-      const result = await getAllCountriesStatus();
-      setAllCountries(result);
-      setIsLoading(false);
+      try {
+        const result = await getAllCountriesStatus();
+        setAllCountries(result);
+      } catch (err) {
+        console.error('Erro ao buscar países:', err);
+        setError('Erro ao carregar a lista de países.');
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchAllCountries();
   }, []);
 
+  // Filtra os países conforme o texto digitado
   useEffect(() => {
     if (country) {
       const filtered = allCountries.filter((c) =>
@@ -34,42 +41,30 @@ const CountrySearch: React.FC = () => {
     }
   }, [country, allCountries]);
 
+  // Função para buscar os dados de um país específico
   const handleSearch = async () => {
     if (country) {
       setIsLoading(true);
-      const result = await getCountryStatus(country);
-      setIsLoading(false);
-      if (result) {
-        setData([result]);
-        setError(null);
-      } else {
-        setData(null);
-        setError('País não encontrado ou erro na API.');
+      setError(null);
+      try {
+        const result = await getCountryStatus(country);
+        console.log('Dados retornados pela API:', result); // Verifique os dados aqui
+        if (result) {
+          setData(result);
+        } else {
+          setData(null);
+          setError('País não encontrado ou erro na API.');
+        }
+      } catch (err) {
+        console.error('Erro ao buscar dados do país:', err);
+        setError('Erro ao buscar os dados. Tente novamente.');
+      } finally {
+        setIsLoading(false);
       }
     } else {
       setError('Por favor, digite o nome de um país.');
     }
   };
-
-  // Define as colunas usando useMemo
-  const columns = useMemo(
-    () => [
-      {
-        Header: 'País',
-        accessor: 'country',
-        Cell: ({ value }: { value: string }) => (
-          <div className="flex items-center">
-            <span className={`fi fi-${getCountryCode(value)} mr-2`}></span>
-            {value}
-          </div>
-        ),
-      },
-      { Header: 'Casos', accessor: 'cases', Cell: ({ value }: { value: number }) => value || '-' },
-      { Header: 'Mortes', accessor: 'deaths', Cell: ({ value }: { value: number }) => value || '-' },
-      { Header: 'Recuperados', accessor: 'recovered', Cell: ({ value }: { value: number }) => value || '-' },
-    ],
-    []
-  );
 
   // Função para obter o código do país (ex: "BR" para Brazil)
   const getCountryCode = (countryName: string): string => {
@@ -77,20 +72,54 @@ const CountrySearch: React.FC = () => {
       'Brazil': 'br',
       'United States': 'us',
       'Canada': 'ca',
+      'Germany': 'de',
+      'Spain': 'es',
+      'France': 'fr',
+      'Italy': 'it',
+      'China': 'cn',
+      'Japan': 'jp',
+      'India': 'in',
       // Adicione mais países conforme necessário
     };
     return countryCodes[countryName] || 'unknown'; // Retorna 'unknown' se o país não for encontrado
   };
 
+  // Define as colunas da tabela
+  const columns = [
+    {
+      Header: 'País',
+      accessor: 'country',
+      Cell: ({ value }: { value: string | number | boolean | undefined }) => (
+        <div className="flex items-center">
+          <span className={`fi fi-${getCountryCode(String(value))} mr-2`}></span>
+          {String(value)}
+        </div>
+      ),
+    },
+    {
+      Header: 'Casos',
+      accessor: 'cases',
+      Cell: ({ value }: { value: string | number | boolean | undefined }) =>
+        typeof value === 'number' ? value.toLocaleString() : '-',
+    },
+    {
+      Header: 'Mortes',
+      accessor: 'deaths',
+      Cell: ({ value }: { value: string | number | boolean | undefined }) =>
+        typeof value === 'number' ? value.toLocaleString() : '-',
+    },
+    {
+      Header: 'Recuperados',
+      accessor: 'recovered',
+      Cell: ({ value }: { value: string | number | boolean | undefined }) =>
+        typeof value === 'number' ? value.toLocaleString() : '-',
+    },
+  ];
+
   // Transforma os dados para o formato esperado pelo DataTable
-  const transformData = (data: CountryData[] | null) => {
+  const transformData = (data: CountryData | null) => {
     if (!data) return [];
-    return data.map((item) => ({
-      country: item.country,
-      cases: item.cases || 0, // Valor padrão para casos
-      deaths: item.deaths || 0, // Valor padrão para mortes
-      recovered: item.recovered || 0, // Valor padrão para recuperados
-    }));
+    return [data]; // Retorna um array com um único objeto
   };
 
   return (
@@ -152,6 +181,7 @@ const CountrySearch: React.FC = () => {
           </button>
         </motion.div>
 
+        {/* Mensagem de erro */}
         {error && (
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -184,7 +214,7 @@ const CountrySearch: React.FC = () => {
             className="mt-8"
           >
             <h3 className="text-2xl font-semibold text-gray-800 mb-4">Resultados da Busca</h3>
-            <DataTable data={transformData(filteredCountries)} columns={columns} />
+            <DataTable data={filteredCountries} columns={columns} />
           </motion.div>
         )}
       </motion.div>

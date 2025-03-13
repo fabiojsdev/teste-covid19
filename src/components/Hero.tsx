@@ -3,13 +3,13 @@ import { motion } from 'framer-motion';
 
 const Hero: React.FC = () => {
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center bg-blue-600 text-white overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center bg-gray-900 text-white overflow-hidden">
       {/* Fundo animado com gradiente */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.8 }}
-        className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-500 z-0"
+        className="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-700 z-0"
       ></motion.div>
 
       {/* Conteúdo centralizado */}
@@ -41,8 +41,10 @@ const Hero: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
         >
           <a
-            href="#states"
-            className="inline-block bg-white text-blue-600 px-10 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition duration-300"
+            href="https://covid19-brazil-api-docs.vercel.app/#req_0962a88e26be4feba9e0c6c4490105c6"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-blue-600 text-white px-10 py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition duration-300"
           >
             Ver Dados
           </a>
@@ -54,7 +56,7 @@ const Hero: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.2 }}
         transition={{ duration: 1, delay: 1 }}
-        className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-blue-800 to-transparent z-0"
+        className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-gray-800 to-transparent z-0"
       ></motion.div>
     </section>
   );

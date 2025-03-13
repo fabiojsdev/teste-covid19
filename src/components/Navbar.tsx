@@ -1,77 +1,77 @@
 import React, { useState } from 'react';
-import { Link } from 'react-scroll';
-import { motion } from 'framer-motion';
+import { Link } from 'react-scroll'; // Para rolagem suave
 
 const Navbar: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // Rolagem suave
+    });
+    setIsMenuOpen(false); // Fecha o menu mobile ao clicar no logo
+  };
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <nav className="bg-blue-600 p-4 shadow-lg fixed w-full top-0 z-50">
+    <nav className="bg-gray-900 p-4 fixed w-full top-0 z-50 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo ou Nome do Site */}
-        <a href="#" className="text-white text-2xl font-bold">
-          COVID-19 Monitor
-        </a>
+        <button
+          onClick={handleScrollToTop}
+          className="text-white text-2xl font-bold hover:text-blue-400 transition-colors"
+        >
+          Covid Monitor
+        </button>
 
-        {/* Menu para Desktop */}
-        <ul className="hidden md:flex space-x-6">
-          <li>
-            <Link
-              to="hero"
-              smooth={true}
-              duration={500}
-              className="text-white hover:text-gray-200 cursor-pointer"
-            >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="states"
-              smooth={true}
-              duration={500}
-              className="text-white hover:text-gray-200 cursor-pointer"
-            >
-              Estados
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="date"
-              smooth={true}
-              duration={500}
-              className="text-white hover:text-gray-200 cursor-pointer"
-            >
-              Data Específica
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="countries"
-              smooth={true}
-              duration={500}
-              className="text-white hover:text-gray-200 cursor-pointer"
-            >
-              Países
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="form"
-              smooth={true}
-              duration={500}
-              className="text-white hover:text-gray-200 cursor-pointer"
-            >
-              Formulário
-            </Link>
-          </li>
-        </ul>
+        {/* Links de Navegação (Desktop) */}
+        <div className="hidden md:flex space-x-8">
+          <Link
+            to="states"
+            smooth={true}
+            duration={500}
+            className="text-white hover:text-blue-400 transition-colors cursor-pointer"
+          >
+            Estados
+          </Link>
+          <Link
+            to="date"
+            smooth={true}
+            duration={500}
+            className="text-white hover:text-blue-400 transition-colors cursor-pointer"
+          >
+            Por Data
+          </Link>
+          <Link
+            to="countries"
+            smooth={true}
+            duration={500}
+            className="text-white hover:text-blue-400 transition-colors cursor-pointer"
+          >
+            Países
+          </Link>
+          <Link
+            to="form"
+            smooth={true}
+            duration={500}
+            className="text-white hover:text-blue-400 transition-colors cursor-pointer"
+          >
+            Formulário
+          </Link>
+          <a
+            href="https://covid19-brazil-api-docs.vercel.app/#req_0962a88e26be4feba9e0c6c4490105c6"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-blue-400 transition-colors"
+          >
+            API Docs
+          </a>
+        </div>
 
-        {/* Ícone do Menu Mobile */}
+        {/* Menu Mobile (Ícone de Hambúrguer) */}
         <button
           onClick={toggleMenu}
           className="md:hidden text-white focus:outline-none"
@@ -81,77 +81,66 @@ const Navbar: React.FC = () => {
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+            xmlns="http://www.w3.org/2000/s"
           >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth="2"
+              strokeWidth={2}
               d="M4 6h16M4 12h16m-7 6h7"
-            ></path>
+            />
           </svg>
         </button>
       </div>
 
-      {/* Menu Mobile */}
-      {isOpen && (
-        <ul className="md:hidden bg-blue-600 mt-4 space-y-2">
-          <li>
-            <Link
-              to="hero"
-              smooth={true}
-              duration={500}
-              onClick={toggleMenu}
-              className="block text-white p-2 hover:bg-blue-700 cursor-pointer"
-            >
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="states"
-              smooth={true}
-              duration={500}
-              onClick={toggleMenu}
-              className="block text-white p-2 hover:bg-blue-700 cursor-pointer"
-            >
-              Estados
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="date"
-              smooth={true}
-              duration={500}
-              onClick={toggleMenu}
-              className="block text-white p-2 hover:bg-blue-700 cursor-pointer"
-            >
-              Data Específica
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="countries"
-              smooth={true}
-              duration={500}
-              onClick={toggleMenu}
-              className="block text-white p-2 hover:bg-blue-700 cursor-pointer"
-            >
-              Países
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="form"
-              smooth={true}
-              duration={500}
-              onClick={toggleMenu}
-              className="block text-white p-2 hover:bg-blue-700 cursor-pointer"
-            >
-              Formulário
-            </Link>
-          </li>
-        </ul>
+      {/* Menu Mobile (Links) */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-gray-800 mt-4 py-2">
+          <Link
+            to="states"
+            smooth={true}
+            duration={500}
+            onClick={() => setIsMenuOpen(false)}
+            className="block text-white px-4 py-2 hover:bg-gray-700 transition-colors"
+          >
+            Estados
+          </Link>
+          <Link
+            to="date"
+            smooth={true}
+            duration={500}
+            onClick={() => setIsMenuOpen(false)}
+            className="block text-white px-4 py-2 hover:bg-gray-700 transition-colors"
+          >
+            Por Data
+          </Link>
+          <Link
+            to="countries"
+            smooth={true}
+            duration={500}
+            onClick={() => setIsMenuOpen(false)}
+            className="block text-white px-4 py-2 hover:bg-gray-700 transition-colors"
+          >
+            Países
+          </Link>
+          <Link
+            to="form"
+            smooth={true}
+            duration={500}
+            onClick={() => setIsMenuOpen(false)}
+            className="block text-white px-4 py-2 hover:bg-gray-700 transition-colors"
+          >
+            Formulário
+          </Link>
+          <a
+            href="https://covid19-brazil-api-docs.vercel.app/#req_0962a88e26be4feba9e0c6c4490105c6"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-white px-4 py-2 hover:bg-gray-700 transition-colors"
+          >
+            API Docs
+          </a>
+        </div>
       )}
     </nav>
   );

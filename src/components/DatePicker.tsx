@@ -28,7 +28,11 @@ const DatePicker: React.FC = () => {
     }
   };
 
-  const columns = ['state', 'cases', 'deaths'];
+  const columns = [
+    { Header: 'Estado', accessor: 'state' },
+    { Header: 'Casos', accessor: 'cases' },
+    { Header: 'Óbitos', accessor: 'deaths' }
+  ];
 
   return (
     <motion.section

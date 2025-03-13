@@ -1,13 +1,18 @@
 import React from 'react';
 
-interface Column {
+// Exporte a interface Column
+export interface Column {
   Header: string;
-  accessor: string;
-  Cell?: ({ value }: { value: any }) => JSX.Element;
+  accessor: keyof DataRow;
+  Cell?: ({ value }: { value: string | number | boolean | undefined }) => React.ReactNode;
+}
+
+interface DataRow {
+  [key: string]: string | number | boolean | undefined;
 }
 
 interface DataTableProps {
-  data: Array<{ [key: string]: string | number | boolean | undefined }>;
+  data: DataRow[];
   columns: Column[];
 }
 
@@ -39,11 +44,9 @@ const DataTable: React.FC<DataTableProps> = ({ data, columns }) => {
                   key={colIndex}
                   className="px-4 py-2 border-b border-gray-200 text-sm text-gray-700"
                 >
-                  {column.Cell ? (
-                    column.Cell({ value: row[column.accessor] })
-                  ) : (
-                    row[column.accessor] || '-'
-                  )}
+                  {column.Cell
+                    ? column.Cell({ value: row[column.accessor] })
+                    : (row[column.accessor] !== undefined ? String(row[column.accessor]) : '-')}
                 </td>
               ))}
             </tr>

@@ -2,27 +2,44 @@ import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { getStateStatus, StateData } from '../services/api';
-import DataTable from './DataTable';
+import DataTable, { Column } from './DataTable'; // Importe o tipo Column corretamente
 
 const StateSelector: React.FC = () => {
   const [state, setState] = useState<string>('');
-  const [data, setData] = useState<StateData[] | null>(null);
+  const [data, setData] = useState<StateData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Defina as colunas corretamente
+  const columns: Column[] = [
+    { Header: 'Estado', accessor: 'state' },
+    { Header: 'Casos', accessor: 'cases' },
+    { Header: 'Mortes', accessor: 'deaths' },
+    { Header: 'Suspeitos', accessor: 'suspects' },
+  ];
 
   const handleSearch = async () => {
-    if (state) {
-      setIsLoading(true);
+    if (!state) return;
+
+    setIsLoading(true);
+    setError(null);
+    try {
       const result = await getStateStatus(state);
+      console.log('Dados retornados pela API:', result); // Log para depuração
       setIsLoading(false);
+
       if (result) {
-        setData([result]);
+        setData(result);
       } else {
         setData(null);
+        setError('Nenhum dado encontrado para este estado.');
       }
+    } catch (err) {
+      setIsLoading(false);
+      setError('Erro ao buscar os dados. Tente novamente.');
+      console.error('Erro ao buscar dados:', err); // Log para depuração
     }
   };
-
-  const columns = ['state', 'cases', 'deaths', 'suspects'];
 
   return (
     <motion.section
@@ -66,34 +83,17 @@ const StateSelector: React.FC = () => {
             className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 flex-1"
           >
             <option value="">Selecione um estado</option>
-            <option value="AC">Acre</option>
-            <option value="AL">Alagoas</option>
-            <option value="AP">Amapá</option>
-            <option value="AM">Amazonas</option>
-            <option value="BA">Bahia</option>
-            <option value="CE">Ceará</option>
-            <option value="DF">Distrito Federal</option>
-            <option value="ES">Espírito Santo</option>
-            <option value="GO">Goiás</option>
-            <option value="MA">Maranhão</option>
-            <option value="MT">Mato Grosso</option>
-            <option value="MS">Mato Grosso do Sul</option>
-            <option value="MG">Minas Gerais</option>
-            <option value="PA">Pará</option>
-            <option value="PB">Paraíba</option>
-            <option value="PR">Paraná</option>
-            <option value="PE">Pernambuco</option>
-            <option value="PI">Piauí</option>
-            <option value="RJ">Rio de Janeiro</option>
-            <option value="RN">Rio Grande do Norte</option>
-            <option value="RS">Rio Grande do Sul</option>
-            <option value="RO">Rondônia</option>
-            <option value="RR">Roraima</option>
-            <option value="SC">Santa Catarina</option>
-            <option value="SP">São Paulo</option>
-            <option value="SE">Sergipe</option>
-            <option value="TO">Tocantins</option>
+            {[
+              'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+              'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
+              'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+            ].map((uf) => (
+              <option key={uf} value={uf}>
+                {uf}
+              </option>
+            ))}
           </select>
+
           <button
             onClick={handleSearch}
             disabled={!state || isLoading}
@@ -110,6 +110,10 @@ const StateSelector: React.FC = () => {
           </button>
         </motion.div>
 
+        {/* Mensagem de erro */}
+        {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+
+        {/* Tabela de dados */}
         {data && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -117,7 +121,7 @@ const StateSelector: React.FC = () => {
             transition={{ duration: 0.5 }}
             className="mt-8"
           >
-            <DataTable data={data} columns={columns} />
+            <DataTable data={[data]} columns={columns} /> {/* Passa o dado como array */}
           </motion.div>
         )}
       </motion.div>
